@@ -30,6 +30,7 @@ jobs:
         run: npm start
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          FORCAR_TODAS: ${{ github.event_name == 'workflow_dispatch' && '1' || '' }}
           DISCORD_WEBHOOK_ESTAGIO: ${{ secrets.DISCORD_WEBHOOK_ESTAGIO }}
           DISCORD_WEBHOOK_JUNIOR: ${{ secrets.DISCORD_WEBHOOK_JUNIOR }}
           DISCORD_WEBHOOK_FULLSTACK: ${{ secrets.DISCORD_WEBHOOK_FULLSTACK }}
