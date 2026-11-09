@@ -5,7 +5,7 @@ import type { Vaga } from "../types.js";
 
 // Endpoint público do portal de vagas da Gupy (não documentado oficialmente;
 // se mudar, esta fonte só registra o erro e as outras continuam funcionando).
-   const BASE = "https://portal.gupy.io/api/job-search/jobs";
+const BASE = "https://portal.gupy.io/api/job-search/jobs";
 
 interface GupyJob {
   id: number;
@@ -30,7 +30,10 @@ export async function buscarGupy(): Promise<Vaga[]> {
       const resp = await getJson<{ data?: GupyJob[] }>(url);
       for (const j of resp.data ?? []) {
         if (!j?.id || !j.name) continue;
-        const remoto = Boolean(j.isRemoteWork) || j.workplaceType === "remote";
+        // Na Gupy, vagas remotas não têm cidade nem estado; usamos isso como reserva
+        // caso o campo workplaceType não venha na resposta.
+        const remoto =
+          Boolean(j.isRemoteWork) || j.workplaceType === "remote" || (!j.workplaceType && !j.city && !j.state);
         const local = remoto ? "Remoto" : [j.city, j.state].filter(Boolean).join(" - ") || "Não informado";
         vagas.set(`gupy:${j.id}`, {
           id: `gupy:${j.id}`,

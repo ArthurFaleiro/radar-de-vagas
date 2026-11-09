@@ -60,6 +60,19 @@ export const PADROES = {
   ],
 };
 
+/**
+ * Vagas presenciais ou híbridas só passam se forem numa dessas cidades.
+ * Vagas remotas passam sempre (Brasil e exterior). Escreva sem acento e em minúsculo.
+ */
+export const CIDADES_PRESENCIAIS = [
+  "porto alegre",
+  "canoas",
+  "sao leopoldo",
+  "esteio",
+  "eldorado do sul",
+  "sapucaia do sul",
+];
+
 /** IA/AI em maiúsculas (verificado no título original, para não pegar "ia" solto). */
 export const SIGLAS_IA = /\b(IA|AI)\b/;
 
