@@ -1,5 +1,6 @@
 // Rode com "npm run testar-filtro" para conferir o filtro sem chamar nenhum site.
 import { escolherCanais } from "./filtro.js";
+import { vagasDoEmail } from "./sources/email.js";
 import type { Fonte, Vaga } from "./types.js";
 
 const POA = "Porto Alegre - Rio Grande do Sul";
@@ -22,7 +23,8 @@ const casos: [string, Fonte, boolean, string, string][] = [
   ["Estágio em Inteligência Artificial", "gupy", false, "Esteio - RS", "ia"],
   ["Engenheiro de IA Júnior", "gupy", true, "Remoto", "ia,remoto"],
   ["Senior AI Engineer", "remotive", true, "Remoto (Worldwide)", ""],
-  ["Junior AI Engineer", "remotive", true, "Remoto (USA)", "ia,internacional"],
+  ["Junior AI Engineer", "remotive", true, "Remoto (USA)", ""],
+  ["Junior AI Engineer", "remotive", true, "Remoto (Worldwide)", "ia,internacional"],
   ["Junior Full Stack Developer", "remotive", true, "Remoto (Worldwide)", "internacional"],
   ["Software Engineer", "remotive", true, "Remoto (Worldwide)", ""],
   ["Analista Financeiro Júnior", "gupy", false, POA, ""],
@@ -34,6 +36,18 @@ const casos: [string, Fonte, boolean, string, string][] = [
   ["Desenvolvedor Júnior", "gupy", false, "Caxias do Sul - RS", ""],
   ["Desenvolvedor Júnior", "gupy", false, "Novo Hamburgo - RS", ""],
   ["Estágio em TI", "gupy", true, "Remoto", "estagio,remoto"],
+  // Fontes internacionais: só vagas abertas ao Brasil/LATAM/mundo
+  ["Junior Frontend Developer", "himalayas", true, "Remoto (Brazil, Argentina)", "internacional"],
+  ["Junior Frontend Developer", "himalayas", true, "Remoto (United States)", ""],
+  ["Software Engineer Intern", "himalayas", true, "Remoto (LATAM)", "internacional"],
+  ["Junior Backend Engineer", "remoteok", true, "Remoto (Worldwide)", "internacional"],
+  ["Junior Backend Engineer", "remoteok", true, "Remoto (Europe)", ""],
+  // Páginas de carreira de empresas
+  ["Estágio em Engenharia de Software", "greenhouse", false, "São Paulo, Brazil", ""],
+  ["Estágio em Engenharia de Software", "greenhouse", true, "Remote - Brazil", "estagio,remoto"],
+  ["Software Engineer Jr", "ashby", false, "Porto Alegre, RS", "junior"],
+  // Alertas por e-mail (o local vem do alerta, então não é filtrado)
+  ["Desenvolvedor Júnior Empresa X São Paulo", "email", false, "Conforme o seu alerta", "junior"],
 ];
 
 let erros = 0;
@@ -45,5 +59,26 @@ for (const [titulo, fonte, remoto, local, esperado] of casos) {
   const rotulo = `${titulo} | ${local} [${fonte}]`;
   console.log(`${ok ? "✅" : "❌"} ${rotulo.padEnd(66)} → ${obtido || "ignorada"}${ok ? "" : ` (esperado: ${esperado || "ignorada"})`}`);
 }
+// Leitura de e-mail de alerta (HTML de exemplo)
+const htmlLinkedin = `
+  <a href="https://www.linkedin.com/comm/jobs/view/4012345678/?trk=x"><img src="logo.png"></a>
+  <a href="https://www.linkedin.com/comm/jobs/view/4012345678/?trk=y">Desenvolvedor Full Stack J&uacute;nior</a>
+  <a href="https://www.linkedin.com/comm/jobs/view/4099999999/">Estágio em Desenvolvimento</a>
+  <a href="https://www.linkedin.com/comm/jobs/search/">Ver todas as vagas</a>`;
+const doEmail = vagasDoEmail(htmlLinkedin, "jobalerts-noreply@linkedin.com", new Date());
+const okEmail =
+  doEmail.length === 2 &&
+  doEmail[0].url === "https://www.linkedin.com/jobs/view/4012345678/" &&
+  doEmail[0].titulo === "Desenvolvedor Full Stack Júnior";
+if (!okEmail) erros++;
+console.log(`${okEmail ? "✅" : "❌"} E-mail do LinkedIn → ${doEmail.map((v) => v.titulo).join(" / ")}`);
+
+const htmlGenerico = `<a href="https://www.catho.com.br/vagas/x/123">Programador Júnior</a><a href="https://www.catho.com.br/sair">Descadastrar</a>`;
+const generico = vagasDoEmail(htmlGenerico, "alertas@catho.com.br", new Date())
+  .filter((v) => escolherCanais(v).length > 0);
+const okGenerico = generico.length === 1 && generico[0].nomeFonte === "Catho";
+if (!okGenerico) erros++;
+console.log(`${okGenerico ? "✅" : "❌"} E-mail da Catho → ${generico.map((v) => v.titulo).join(" / ")}`);
+
 console.log(erros ? `\n${erros} caso(s) com problema` : "\nTodos os casos passaram");
 process.exit(erros ? 1 : 0);

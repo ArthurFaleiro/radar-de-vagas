@@ -17,9 +17,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: 22
           cache: npm
@@ -37,6 +37,8 @@ jobs:
           DISCORD_WEBHOOK_REMOTO: ${{ secrets.DISCORD_WEBHOOK_REMOTO }}
           DISCORD_WEBHOOK_INTERNACIONAL: ${{ secrets.DISCORD_WEBHOOK_INTERNACIONAL }}
           DISCORD_WEBHOOK_ADMIN: ${{ secrets.DISCORD_WEBHOOK_ADMIN }}
+          GMAIL_USER: ${{ secrets.GMAIL_USER }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
 
       - name: Salvar vagas já enviadas
         run: |

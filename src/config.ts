@@ -28,8 +28,41 @@ export const IDADE_MAXIMA_DIAS = 3;
 /** Limite de vagas por canal em cada execução. */
 export const MAX_POR_CANAL = 15;
 
-/** Remotive pede no máximo 4 atualizações por dia: só consulta nessas horas (UTC). */
-export const HORAS_REMOTIVE_UTC = [0, 6, 12, 18];
+/**
+ * Empresas acompanhadas direto na página de carreiras (APIs públicas oficiais).
+ * Para achar o identificador, abra a página de vagas da empresa:
+ *   - Greenhouse: job-boards.greenhouse.io/XXXX  ou  boards.greenhouse.io/XXXX  → "XXXX"
+ *   - Lever:      jobs.lever.co/XXXX                                          → "XXXX"
+ *   - Ashby:      jobs.ashbyhq.com/XXXX                                       → "XXXX"
+ * Se um identificador estiver errado, o #administrativo avisa.
+ */
+export const EMPRESAS = {
+  greenhouse: ["quintoandar", "vtex", "zupinnovation"],
+  lever: [] as string[],
+  ashby: ["nubank"],
+};
+
+/** Himalayas: buscas de vagas remotas por senioridade (o filtro de nível é aplicado depois). */
+export const SENIORIDADES_HIMALAYAS = ["Entry-level", "Internship"];
+
+/**
+ * Sites cujos alertas de vaga chegam no seu Gmail. O bot lê esses e-mails
+ * e posta as vagas. Crie os alertas em cada site já com o local desejado
+ * (ex.: Porto Alegre ou Remoto), porque e-mails não trazem a cidade de forma confiável.
+ */
+export const ALERTAS_EMAIL = [
+  { nome: "LinkedIn", dominio: "linkedin.com", idDoLink: /linkedin\.com\/(?:comm\/)?jobs\/view\/(\d+)/ },
+  { nome: "Indeed", dominio: "indeed.com" },
+  { nome: "Glassdoor", dominio: "glassdoor.com" },
+  { nome: "Infojobs", dominio: "infojobs.com.br" },
+  { nome: "Catho", dominio: "catho.com.br" },
+  { nome: "Vagas.com", dominio: "vagas.com.br" },
+  { nome: "Programathor", dominio: "programathor.com.br" },
+  { nome: "PUCRS Carreiras", dominio: "pucrs.br" },
+] as { nome: string; dominio: string; idDoLink?: RegExp }[];
+
+/** Quantos dias de e-mails o bot olha a cada execução. */
+export const DIAS_EMAIL = 2;
 
 /**
  * Padrões aplicados ao texto normalizado (minúsculo e sem acento).

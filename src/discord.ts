@@ -1,8 +1,18 @@
 import { CORES, WEBHOOK_ADMIN, WEBHOOKS } from "./config.js";
 import { esperar } from "./http.js";
-import type { Canal, Vaga } from "./types.js";
+import type { Canal, Fonte, Vaga } from "./types.js";
 
-const NOME_FONTE = { gupy: "Gupy", remotive: "Remotive", github: "GitHub" } as const;
+const NOME_FONTE: Record<Fonte, string> = {
+  gupy: "Gupy",
+  remotive: "Remotive",
+  github: "GitHub",
+  himalayas: "Himalayas",
+  remoteok: "Remote OK",
+  greenhouse: "página de carreiras",
+  lever: "página de carreiras",
+  ashby: "página de carreiras",
+  email: "alerta por e-mail",
+};
 
 function montarEmbed(vaga: Vaga, canal: Canal) {
   return {
@@ -13,7 +23,7 @@ function montarEmbed(vaga: Vaga, canal: Canal) {
       { name: "🏢 Empresa", value: vaga.empresa.slice(0, 1024), inline: true },
       { name: vaga.remoto ? "🏠 Local" : "📍 Local", value: vaga.local.slice(0, 1024), inline: true },
     ],
-    footer: { text: `via ${NOME_FONTE[vaga.fonte]}` },
+    footer: { text: `via ${vaga.nomeFonte ?? NOME_FONTE[vaga.fonte]}` },
     ...(vaga.publicadaEm ? { timestamp: vaga.publicadaEm.toISOString() } : {}),
   };
 }

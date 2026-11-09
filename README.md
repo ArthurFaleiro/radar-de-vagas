@@ -4,13 +4,25 @@ Bot que procura vagas de **estágio, júnior, full stack e IA** (ignorando pleno
 
 ## Fontes
 
-| Fonte | O que traz | Observação |
+| Fonte | O que traz | Frequência |
 |---|---|---|
-| Gupy | Vagas no Brasil (muitas de estágio e júnior) | Endpoint público do portal; não é documentado, pode mudar |
-| Remotive | Vagas remotas internacionais | Consultado só 4x por dia, como o Remotive pede; vagas chegam com 24h de atraso |
-| GitHub | Issues de `frontendbr/vagas` e `backend-br/vagas` | API oficial do GitHub |
+| Gupy | Vagas no Brasil (muitas de estágio e júnior) | a cada 30 min |
+| GitHub | Issues de `frontendbr/vagas` e `backend-br/vagas` | a cada 30 min |
+| Alertas por e-mail | LinkedIn, Indeed, Glassdoor, Infojobs, Catho, Vagas.com, Programathor, PUCRS Carreiras | a cada 30 min |
+| Páginas de carreira | Empresas no Greenhouse, Lever e Ashby (lista em `src/config.ts`) | a cada 2 h |
+| Remote OK | Vagas remotas internacionais | a cada 2 h |
+| Himalayas | Vagas remotas internacionais (entry-level e estágio) | a cada 3 h |
+| Remotive | Vagas remotas internacionais | 4x por dia |
 
-LinkedIn, Infojobs, Catho e PUCRS Carreiras não são lidos diretamente (os termos de uso proíbem robôs). Para eles, use os alertas por e-mail dos próprios sites.
+LinkedIn e os outros sites de emprego não são lidos diretamente (os termos de uso proíbem robôs): o bot lê os alertas que esses sites mandam para o seu Gmail.
+
+## Filtros
+
+- **Nível:** estágio, júnior, full stack ou IA. Pleno, sênior, lead, especialista etc. são ignorados.
+- **Presencial/híbrida:** só em Porto Alegre, Canoas, São Leopoldo, Esteio, Eldorado do Sul e Sapucaia do Sul.
+- **Remota no Brasil:** sempre passa.
+- **Remota internacional:** só se aceitar quem mora no Brasil, na América Latina ou no mundo todo.
+- **Alertas por e-mail:** o local é o que você configurou no alerta do site.
 
 ## Canais
 
@@ -24,13 +36,16 @@ LinkedIn, Infojobs, Catho e PUCRS Carreiras não são lidos diretamente (os term
 | #internacional | `DISCORD_WEBHOOK_INTERNACIONAL` |
 | #administrativo (avisos de erro) | `DISCORD_WEBHOOK_ADMIN` |
 
-Vagas do Brasil vão para o canal do nível (#estágio, #junior, #full-stack ou #ia) e, se forem remotas, também para #remoto. Vagas internacionais (Remotive) vão para #internacional, e as de IA também para #ia. O #administrativo só recebe um aviso quando uma fonte para de funcionar, no máximo uma vez a cada 12 horas por fonte. A regra fica em `src/filtro.ts`.
+Vagas do Brasil vão para o canal do nível e, se forem remotas, também para #remoto. Vagas internacionais vão para #internacional (e as de IA também para #ia).
 
-## Como colocar no ar
+## Alertas por e-mail (LinkedIn e outros)
 
-1. Crie um repositório no GitHub e envie esta pasta.
-2. Em **Settings → Secrets and variables → Actions → New repository secret**, crie os secrets acima com as URLs dos webhooks.
-3. Na aba **Actions**, abra "Radar de Vagas" e clique em **Run workflow** para testar.
+1. Ative a verificação em duas etapas na sua conta Google.
+2. Crie uma **senha de app** em myaccount.google.com/apppasswords.
+3. Cadastre os secrets `GMAIL_USER` (seu e-mail) e `GMAIL_APP_PASSWORD` (a senha de 16 letras).
+4. Crie alertas de vaga em cada site, já com o local desejado (Porto Alegre e região, ou Remoto).
+
+O acesso é só leitura: o bot não apaga, move nem marca e-mails como lidos.
 
 ## Rodar no computador
 
@@ -40,8 +55,8 @@ npm run testar-filtro   # confere o filtro com exemplos, sem acessar nenhum site
 npm start               # sem webhooks configurados, só mostra no terminal o que enviaria
 ```
 
-Para enviar de verdade localmente, defina as variáveis `DISCORD_WEBHOOK_*` no terminal antes do `npm start`. Para forçar a consulta ao Remotive fora dos horários, use `FORCAR_REMOTIVE=1`.
+Para forçar todas as fontes fora dos horários delas, use `FORCAR_TODAS=1`.
 
 ## Personalizar
 
-Tudo que define o que é buscado e filtrado fica em `src/config.ts`: as buscas da Gupy, os repositórios do GitHub, as palavras de inclusão e exclusão, a idade máxima das vagas e o limite por canal.
+Tudo fica em `src/config.ts`: buscas da Gupy, empresas acompanhadas, sites de alerta por e-mail, palavras de inclusão e exclusão, cidades aceitas, idade máxima das vagas e limite por canal.

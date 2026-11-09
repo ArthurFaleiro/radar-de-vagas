@@ -1,4 +1,4 @@
-import { HORAS_REMOTIVE_UTC } from "../config.js";
+import { deveRodar } from "../agenda.js";
 import { getJson } from "../http.js";
 import { registrarFalha } from "../falhas.js";
 import type { Vaga } from "../types.js";
@@ -17,9 +17,8 @@ interface RemotiveJob {
   publication_date?: string;
 }
 
-export async function buscarRemotive(agora = new Date()): Promise<Vaga[]> {
-  const horaCerta = HORAS_REMOTIVE_UTC.includes(agora.getUTCHours()) && agora.getUTCMinutes() < 30;
-  if (!horaCerta && !process.env.FORCAR_REMOTIVE) return [];
+export async function buscarRemotive(): Promise<Vaga[]> {
+  if (!deveRodar(6) && !process.env.FORCAR_REMOTIVE) return []; // 4x por dia, como o Remotive pede
 
   try {
     const resp = await getJson<{ jobs?: RemotiveJob[] }>(URL_API);

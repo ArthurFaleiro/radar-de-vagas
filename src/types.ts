@@ -1,4 +1,13 @@
-export type Fonte = "gupy" | "remotive" | "github";
+export type Fonte =
+  | "gupy"
+  | "remotive"
+  | "github"
+  | "himalayas"
+  | "remoteok"
+  | "greenhouse"
+  | "lever"
+  | "ashby"
+  | "email";
 
 export type Canal = "estagio" | "junior" | "fullstack" | "ia" | "remoto" | "internacional";
 
@@ -12,6 +21,8 @@ export interface Vaga {
   remoto: boolean;
   publicadaEm: Date | null;
   fonte: Fonte;
-  /** Texto extra usado só no filtro (labels, tipo da vaga etc.) */
+  /** Nome mostrado no rodapé do card, quando difere da fonte (ex.: "LinkedIn" para alertas por e-mail). */
+  nomeFonte?: string;
+  /** Texto extra usado só no filtro (labels, tipo da vaga, senioridade etc.) */
   extra?: string;
 }

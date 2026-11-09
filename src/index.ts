@@ -3,10 +3,14 @@ import { avisarAdmin, enviarParaCanal } from "./discord.js";
 import { carregarEstado, salvarEstado } from "./estado.js";
 import { falhas } from "./falhas.js";
 import { escolherCanais } from "./filtro.js";
+import { buscarEmail } from "./sources/email.js";
+import { buscarEmpresas } from "./sources/empresas.js";
 import { buscarGithub } from "./sources/github.js";
 import { buscarGupy } from "./sources/gupy.js";
+import { buscarHimalayas } from "./sources/himalayas.js";
+import { buscarRemoteOk } from "./sources/remoteok.js";
 import { buscarRemotive } from "./sources/remotive.js";
-import type { Canal, Fonte, Vaga } from "./types.js";
+import type { Canal, Vaga } from "./types.js";
 
 /** Chave no arquivo de estado: a mesma vaga pode ir para dois canais (ex.: #junior e #remoto). */
 const chave = (vaga: Vaga, canal: Canal) => `${vaga.id}>${canal}`;
@@ -15,12 +19,26 @@ async function main() {
   const estado = carregarEstado();
   const limiteIdade = Date.now() - IDADE_MAXIMA_DIAS * 86_400_000;
 
-  const [gupy, remotive, github] = await Promise.all([buscarGupy(), buscarRemotive(), buscarGithub()]);
-  const coletadas: Record<Fonte, number> = { gupy: gupy.length, remotive: remotive.length, github: github.length };
-  console.log(`Coletadas: Gupy ${gupy.length} | Remotive ${remotive.length} | GitHub ${github.length}`);
+  const resultados = await Promise.all([
+    buscarGupy(),
+    buscarGithub(),
+    buscarRemotive(),
+    buscarHimalayas(),
+    buscarRemoteOk(),
+    buscarEmpresas(),
+    buscarEmail(),
+  ]);
+  const todas = resultados.flat();
+
+  const coletadas = new Map<string, number>();
+  for (const v of todas) coletadas.set(v.fonte, (coletadas.get(v.fonte) ?? 0) + 1);
+  console.log(`Coletadas: ${[...coletadas].map(([f, n]) => `${f} ${n}`).join(" | ") || "nenhuma"}`);
 
   const porCanal = new Map<Canal, Vaga[]>();
-  for (const vaga of [...gupy, ...remotive, ...github]) {
+  const vistas = new Set<string>();
+  for (const vaga of todas) {
+    if (vistas.has(vaga.id)) continue; // a mesma vaga pode vir de duas buscas
+    vistas.add(vaga.id);
     if (vaga.publicadaEm && vaga.publicadaEm.getTime() < limiteIdade) continue; // antiga demais
     for (const canal of escolherCanais(vaga)) {
       if (estado[chave(vaga, canal)]) continue; // já enviada para este canal
@@ -39,14 +57,17 @@ async function main() {
     total += enviadas.length;
   }
 
-  // Avisa no #administrativo quando uma fonte falhou e não trouxe nenhuma vaga
+  // Avisa no #administrativo quando uma fonte parou de funcionar
+  // (não trouxe nenhuma vaga) ou quando algo aponta para um endereço inexistente (404)
   for (const [fonte, erros] of falhas) {
-    if (coletadas[fonte] > 0) continue; // falha parcial (ex.: 1 busca da Gupy), ignora
+    const semVagas = (coletadas.get(fonte) ?? 0) === 0;
+    const enderecoErrado = erros.some((e) => e.includes("HTTP 404"));
+    if (!semVagas && !enderecoErrado) continue; // falha pontual, ignora
     const chaveAlerta = `alerta>${fonte}`;
     const ultimo = estado[chaveAlerta] ? new Date(estado[chaveAlerta]).getTime() : 0;
     if (Date.now() - ultimo < HORAS_ENTRE_ALERTAS * 3_600_000) continue;
     const enviado = await avisarAdmin(
-      `⚠️ A fonte **${fonte}** falhou e não trouxe nenhuma vaga.\n\`\`\`\n${erros.slice(0, 5).join("\n")}\n\`\`\``,
+      `⚠️ Problema na fonte **${fonte}**:\n\`\`\`\n${erros.slice(0, 5).join("\n")}\n\`\`\``,
     );
     if (enviado) estado[chaveAlerta] = new Date().toISOString();
   }
