@@ -5,7 +5,7 @@ import type { Vaga } from "../types.js";
 
 // Endpoint público do portal de vagas da Gupy (não documentado oficialmente;
 // se mudar, esta fonte só registra o erro e as outras continuam funcionando).
-const BASE = "https://employability-portal.gupy.io/api/v1/jobs";
+   const BASE = "https://portal.gupy.io/api/job-search/jobs";
 
 interface GupyJob {
   id: number;
