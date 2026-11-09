@@ -17,6 +17,12 @@ export const BUSCAS_GUPY = [
   "full stack",
   "inteligência artificial",
   "machine learning",
+  // Vagas administrativas (#vagas-administrativas)
+  "assistente administrativo",
+  "auxiliar administrativo",
+  "estágio administrativo",
+  "jovem aprendiz administrativo",
+  "recepcionista",
 ];
 
 /** Repositórios do GitHub onde as vagas são publicadas como issues. */
@@ -82,7 +88,17 @@ export const PADROES = {
     /\bsenior\b/, /\bsr\b(?!\/)/, /\bpleno\b/, /\bpl\b(?!\/)/, /\blead\b/, /\blider\b/,
     /\bstaff\b/, /\bprincipal\b/, /especialista/, /specialist/, /coordenador/,
     /gerente/, /\bmanager\b/, /\bhead\b/, /arquitet/, /architect/, /mid[\s-]?level/,
-    /\b(ii|iii|iv)\b/,
+    /\b(ii|iii|iv)\b/, /supervisor/,
+  ],
+  // Vagas administrativas: o título precisa ter um destes termos...
+  administrativo: [
+    /administrativ/, /auxiliar de escritorio/, /assistente de escritorio/, /recepcionista/,
+    /secretari[oa]/, /\badministrative\b/, /office assistant/,
+  ],
+  // ...e ser de entrada (assistente, auxiliar, estágio, aprendiz, júnior)
+  entradaAdministrativa: [
+    /assistente/, /auxiliar/, /recepcionista/, /secretari/, /aprendiz/, /estagi/,
+    /\bjunior\b/, /\bjr\b/, /trainee/, /\bassistant\b/, /\bintern\b/,
   ],
   estagio: [/estagi/, /\bintern(ship)?\b/],
   junior: [/\bjunior\b/, /\bjr\b/, /trainee/, /entry[\s-]?level/, /new grad/],
@@ -116,6 +132,7 @@ export const CORES: Record<Canal, number> = {
   ia: 0xe67e22,
   remoto: 0x1abc9c,
   internacional: 0xf1c40f,
+  administrativo: 0x95a5a6,
 };
 
 /** Nome da variável de ambiente (secret) com o webhook de cada canal. */
@@ -126,6 +143,7 @@ export const WEBHOOKS: Record<Canal, string> = {
   ia: "DISCORD_WEBHOOK_IA",
   remoto: "DISCORD_WEBHOOK_REMOTO",
   internacional: "DISCORD_WEBHOOK_INTERNACIONAL",
+  administrativo: "DISCORD_WEBHOOK_VAGAS_ADMINISTRATIVAS",
 };
 
 /** Canal #administrativo: recebe avisos quando alguma fonte falha (opcional). */

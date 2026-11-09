@@ -19,6 +19,7 @@ LinkedIn e os outros sites de emprego não são lidos diretamente (os termos de 
 ## Filtros
 
 - **Nível:** estágio, júnior, full stack ou IA. Pleno, sênior, lead, especialista etc. são ignorados.
+- **Administrativas:** assistente, auxiliar, recepcionista, estágio, jovem aprendiz ou júnior administrativo vão para #vagas-administrativas.
 - **Presencial/híbrida:** só em Porto Alegre, Canoas, São Leopoldo, Esteio, Eldorado do Sul e Sapucaia do Sul.
 - **Remota no Brasil:** sempre passa.
 - **Remota internacional:** só se aceitar quem mora no Brasil, na América Latina ou no mundo todo.
@@ -34,6 +35,7 @@ LinkedIn e os outros sites de emprego não são lidos diretamente (os termos de 
 | #ia | `DISCORD_WEBHOOK_IA` |
 | #remoto | `DISCORD_WEBHOOK_REMOTO` |
 | #internacional | `DISCORD_WEBHOOK_INTERNACIONAL` |
+| #vagas-administrativas | `DISCORD_WEBHOOK_VAGAS_ADMINISTRATIVAS` |
 | #administrativo (avisos de erro) | `DISCORD_WEBHOOK_ADMIN` |
 
 Vagas do Brasil vão para o canal do nível e, se forem remotas, também para #remoto. Vagas internacionais vão para #internacional (e as de IA também para #ia).
@@ -55,7 +57,7 @@ npm run testar-filtro   # confere o filtro com exemplos, sem acessar nenhum site
 npm start               # sem webhooks configurados, só mostra no terminal o que enviaria
 ```
 
-Para forçar todas as fontes fora dos horários delas, use `FORCAR_TODAS=1`.
+Para forçar todas as fontes fora dos horários delas, use `FORCAR_TODAS=1`. No GitHub, o botão **Run workflow** já faz isso.
 
 ## Personalizar
 

@@ -46,6 +46,18 @@ const casos: [string, Fonte, boolean, string, string][] = [
   ["Estágio em Engenharia de Software", "greenhouse", false, "São Paulo, Brazil", ""],
   ["Estágio em Engenharia de Software", "greenhouse", true, "Remote - Brazil", "estagio,remoto"],
   ["Software Engineer Jr", "ashby", false, "Porto Alegre, RS", "junior"],
+  // Vagas administrativas
+  ["Assistente Administrativo", "gupy", false, POA, "administrativo"],
+  ["Auxiliar Administrativo", "gupy", false, "Canoas - RS", "administrativo"],
+  ["Estágio Administrativo", "gupy", true, "Remoto", "administrativo"],
+  ["Jovem Aprendiz - Administrativo", "gupy", false, "Esteio - RS", "administrativo"],
+  ["Recepcionista", "gupy", false, POA, "administrativo"],
+  ["Assistente Administrativo", "gupy", false, "São Paulo - SP", ""],
+  ["Analista Administrativo", "gupy", false, POA, ""],
+  ["Analista Administrativo Júnior", "gupy", false, POA, "administrativo"],
+  ["Coordenador Administrativo", "gupy", false, POA, ""],
+  ["Supervisor Administrativo", "gupy", false, POA, ""],
+  ["Assistente Administrativo Pleno", "gupy", false, POA, ""],
   // Alertas por e-mail (o local vem do alerta, então não é filtrado)
   ["Desenvolvedor Júnior Empresa X São Paulo", "email", false, "Conforme o seu alerta", "junior"],
 ];

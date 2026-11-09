@@ -45,12 +45,22 @@ export function localPermitido(vaga: Vaga): boolean {
  * - Vagas internacionais (Remotive, Himalayas, Remote OK) vão para #internacional,
  *   e as de IA também para #ia. Só passam as abertas a quem mora no Brasil/LATAM ou no mundo todo.
  *
+ * - Vagas administrativas (assistente, auxiliar, estágio etc.) vão só para #vagas-administrativas.
+ *
  * Olha só o título (e labels/tipo da vaga), não a descrição: descrições
  * citam "sênior" ou "IA" o tempo todo e gerariam falsos positivos.
  */
 export function escolherCanais(vaga: Vaga): Canal[] {
   const texto = normalizar(`${vaga.titulo} ${vaga.extra ?? ""}`);
   const titulo = normalizar(vaga.titulo);
+
+  // Vagas administrativas têm canal próprio e não passam pelo filtro de tecnologia
+  if (algum(PADROES.administrativo, titulo)) {
+    if (algum(PADROES.excluir, titulo)) return [];
+    if (!algum(PADROES.entradaAdministrativa, texto)) return []; // ex.: "Analista Administrativo" sem nível
+    if (!localPermitido(vaga)) return [];
+    return ["administrativo"];
+  }
 
   const ehIA = algum(PADROES.ia, texto) || SIGLAS_IA.test(vaga.titulo);
   if (!ehIA && !algum(PADROES.tecnologia, texto)) return [];

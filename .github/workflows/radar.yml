@@ -30,6 +30,7 @@ jobs:
         run: npm start
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Ao clicar em "Run workflow", consulta todas as fontes na hora
           FORCAR_TODAS: ${{ github.event_name == 'workflow_dispatch' && '1' || '' }}
           DISCORD_WEBHOOK_ESTAGIO: ${{ secrets.DISCORD_WEBHOOK_ESTAGIO }}
           DISCORD_WEBHOOK_JUNIOR: ${{ secrets.DISCORD_WEBHOOK_JUNIOR }}
@@ -37,6 +38,7 @@ jobs:
           DISCORD_WEBHOOK_IA: ${{ secrets.DISCORD_WEBHOOK_IA }}
           DISCORD_WEBHOOK_REMOTO: ${{ secrets.DISCORD_WEBHOOK_REMOTO }}
           DISCORD_WEBHOOK_INTERNACIONAL: ${{ secrets.DISCORD_WEBHOOK_INTERNACIONAL }}
+          DISCORD_WEBHOOK_VAGAS_ADMINISTRATIVAS: ${{ secrets.DISCORD_WEBHOOK_VAGAS_ADMINISTRATIVAS }}
           DISCORD_WEBHOOK_ADMIN: ${{ secrets.DISCORD_WEBHOOK_ADMIN }}
           GMAIL_USER: ${{ secrets.GMAIL_USER }}
           GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
