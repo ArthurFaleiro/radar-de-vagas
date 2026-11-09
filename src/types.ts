@@ -9,7 +9,7 @@ export type Fonte =
   | "ashby"
   | "email";
 
-export type Canal = "estagio" | "junior" | "fullstack" | "ia" | "remoto" | "internacional" | "administrativo";
+export type Canal = "estagio" | "junior" | "fullstack" | "ia" | "remoto" | "internacional" | "administrativo" | "saude";
 
 export interface Vaga {
   /** ID único global, ex.: "gupy:123456" */

@@ -23,6 +23,19 @@ export const BUSCAS_GUPY = [
   "estágio administrativo",
   "jovem aprendiz administrativo",
   "recepcionista",
+  // Vagas da saúde (#vagas-saude)
+  "enfermeiro",
+  "técnico de enfermagem",
+  "auxiliar de enfermagem",
+  "assistente de enfermagem",
+  "estágio enfermagem",
+  "estágio saúde",
+  "auxiliar de farmácia",
+  "farmacêutico",
+  "fisioterapeuta",
+  "nutricionista",
+  "recepcionista hospitalar",
+  "assistente administrativo hospital",
 ];
 
 /** Repositórios do GitHub onde as vagas são publicadas como issues. */
@@ -90,6 +103,24 @@ export const PADROES = {
     /gerente/, /\bmanager\b/, /\bhead\b/, /arquitet/, /architect/, /mid[\s-]?level/,
     /\b(ii|iii|iv)\b/, /supervisor/,
   ],
+  // Vagas da saúde (sem medicina): profissões e áreas no título
+  saude: [
+    /enferm/, /farmac/, /drogari/, /fisioterap/, /nutricion/, /nutricao/, /psicolog/,
+    /odontolog/, /saude bucal/, /dentist/, /radiolog/, /biomedic/, /analises clinicas/,
+    /laboratori/, /fonoaudiolog/, /terapeuta ocupacional/, /terapia ocupacional/,
+    /cuidador/, /instrumentad/, /hospitalar/, /\bsaude\b/, /\bnursing\b/, /\bnurse\b/,
+    /healthcare/, /\bpharmac/, /maqueiro/, /socorrista/, /esterilizacao/,
+  ],
+  // Empresas da saúde: um cargo administrativo nelas também vai para #vagas-saude
+  empresaSaude: [
+    /hospital/, /clinic/, /\bsaude\b/, /laboratori/, /farmac/, /drogari/, /odonto/,
+    /unimed/, /hapvida/, /panvel/, /drogasil/, /\braia\b/, /\bdasa\b/, /fleury/,
+    /santa casa/, /moinhos/, /\bghc\b/, /\bhcpa\b/, /mae de deus/, /\bhealth/,
+  ],
+  // Medicina fica de fora do canal de saúde
+  medicina: [/\bmedic[oa]s?\b/, /residencia medica/, /\bphysician\b/, /\bdoctor\b/],
+  // Chefia, que fica de fora do canal de saúde
+  chefiaSaude: [/coordenad/, /gerente/, /supervis/, /diretor/, /\bhead\b/, /\bsenior\b/, /\bsr\b(?!\/)/, /\blider\b/, /\bmanager\b/],
   // Vagas administrativas: o título precisa ter um destes termos...
   administrativo: [
     /administrativ/, /auxiliar de escritorio/, /assistente de escritorio/, /recepcionista/,
@@ -133,6 +164,7 @@ export const CORES: Record<Canal, number> = {
   remoto: 0x1abc9c,
   internacional: 0xf1c40f,
   administrativo: 0x95a5a6,
+  saude: 0xe74c3c,
 };
 
 /** Nome da variável de ambiente (secret) com o webhook de cada canal. */
@@ -144,6 +176,7 @@ export const WEBHOOKS: Record<Canal, string> = {
   remoto: "DISCORD_WEBHOOK_REMOTO",
   internacional: "DISCORD_WEBHOOK_INTERNACIONAL",
   administrativo: "DISCORD_WEBHOOK_VAGAS_ADMINISTRATIVAS",
+  saude: "DISCORD_WEBHOOK_VAGAS_SAUDE",
 };
 
 /** Canal #administrativo: recebe avisos quando alguma fonte falha (opcional). */

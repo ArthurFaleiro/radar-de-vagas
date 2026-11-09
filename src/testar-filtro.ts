@@ -58,6 +58,19 @@ const casos: [string, Fonte, boolean, string, string][] = [
   ["Coordenador Administrativo", "gupy", false, POA, ""],
   ["Supervisor Administrativo", "gupy", false, POA, ""],
   ["Assistente Administrativo Pleno", "gupy", false, POA, ""],
+  // Saúde
+  ["Técnico de Enfermagem", "gupy", false, POA, "saude"],
+  ["Técnico de Enfermagem - UTI", "gupy", false, "Canoas - RS", "saude"],
+  ["Enfermeiro(a) Assistencial", "gupy", false, POA, "saude"],
+  ["Assistente de Enfermagem", "gupy", false, "São Leopoldo - RS", "saude"],
+  ["Estágio em Enfermagem", "gupy", false, POA, "saude"],
+  ["Auxiliar de Farmácia", "gupy", false, "Esteio - RS", "saude"],
+  ["Nutricionista Clínica", "gupy", true, "Remoto", "saude"],
+  ["Psicólogo(a) Online", "gupy", true, "Remoto", "saude"],
+  ["Técnico de Enfermagem", "gupy", false, "Caxias do Sul - RS", ""],
+  ["Médico Clínico Geral", "gupy", false, POA, ""],
+  ["Coordenador de Enfermagem", "gupy", false, POA, ""],
+  ["Desenvolvedor Júnior - Saúde Digital", "gupy", false, POA, "junior"],
   // Alertas por e-mail (o local vem do alerta, então não é filtrado)
   ["Desenvolvedor Júnior Empresa X São Paulo", "email", false, "Conforme o seu alerta", "junior"],
 ];
@@ -71,6 +84,22 @@ for (const [titulo, fonte, remoto, local, esperado] of casos) {
   const rotulo = `${titulo} | ${local} [${fonte}]`;
   console.log(`${ok ? "✅" : "❌"} ${rotulo.padEnd(66)} → ${obtido || "ignorada"}${ok ? "" : ` (esperado: ${esperado || "ignorada"})`}`);
 }
+// Administrativo em empresa de saúde (depende do nome da empresa)
+const casosEmpresa: [string, string, string][] = [
+  ["Recepcionista", "Hospital Moinhos de Vento", "saude,administrativo"],
+  ["Assistente Administrativo", "Clínica Vida", "saude,administrativo"],
+  ["Auxiliar Administrativo", "Unimed Porto Alegre", "saude,administrativo"],
+  ["Assistente Administrativo", "Loja de Roupas", "administrativo"],
+  ["Desenvolvedor Júnior", "Hospital Moinhos de Vento", "junior"],
+];
+for (const [titulo, empresa, esperado] of casosEmpresa) {
+  const vaga: Vaga = { id: titulo, titulo, empresa, url: "", local: POA, remoto: false, publicadaEm: null, fonte: "gupy" };
+  const obtido = escolherCanais(vaga).join(",");
+  const ok = obtido === esperado;
+  if (!ok) erros++;
+  console.log(`${ok ? "✅" : "❌"} ${`${titulo} @ ${empresa}`.padEnd(66)} → ${obtido || "ignorada"}${ok ? "" : ` (esperado: ${esperado || "ignorada"})`}`);
+}
+
 // Leitura de e-mail de alerta (HTML de exemplo)
 const htmlLinkedin = `
   <a href="https://www.linkedin.com/comm/jobs/view/4012345678/?trk=x"><img src="logo.png"></a>

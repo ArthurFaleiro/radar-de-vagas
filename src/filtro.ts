@@ -45,7 +45,9 @@ export function localPermitido(vaga: Vaga): boolean {
  * - Vagas internacionais (Remotive, Himalayas, Remote OK) vão para #internacional,
  *   e as de IA também para #ia. Só passam as abertas a quem mora no Brasil/LATAM ou no mundo todo.
  *
- * - Vagas administrativas (assistente, auxiliar, estágio etc.) vão só para #vagas-administrativas.
+ * - Vagas da saúde (sem medicina e sem chefia) vão para #vagas-saude; as administrativas
+ *   em hospital, clínica, laboratório ou farmácia vão para #vagas-saude e #vagas-administrativas.
+ * - Outras vagas administrativas (assistente, auxiliar, estágio etc.) vão para #vagas-administrativas.
  *
  * Olha só o título (e labels/tipo da vaga), não a descrição: descrições
  * citam "sênior" ou "IA" o tempo todo e gerariam falsos positivos.
@@ -54,10 +56,23 @@ export function escolherCanais(vaga: Vaga): Canal[] {
   const texto = normalizar(`${vaga.titulo} ${vaga.extra ?? ""}`);
   const titulo = normalizar(vaga.titulo);
 
+  const ehTech = algum(PADROES.tecnologia, titulo);
+  const ehAdministrativo = algum(PADROES.administrativo, titulo);
+  const administrativoDeEntrada =
+    ehAdministrativo && !algum(PADROES.excluir, titulo) && algum(PADROES.entradaAdministrativa, texto);
+
+  // Saúde (sem medicina). Vagas de TI em empresa de saúde seguem para os canais de dev.
+  const empresaDeSaude = algum(PADROES.empresaSaude, normalizar(`${vaga.empresa} ${vaga.titulo}`));
+  const ehSaude = algum(PADROES.saude, titulo) || (ehAdministrativo && empresaDeSaude);
+  if (ehSaude && !ehTech) {
+    if (algum(PADROES.medicina, titulo) || algum(PADROES.chefiaSaude, titulo)) return [];
+    if (!localPermitido(vaga)) return [];
+    return administrativoDeEntrada ? ["saude", "administrativo"] : ["saude"];
+  }
+
   // Vagas administrativas têm canal próprio e não passam pelo filtro de tecnologia
-  if (algum(PADROES.administrativo, titulo)) {
-    if (algum(PADROES.excluir, titulo)) return [];
-    if (!algum(PADROES.entradaAdministrativa, texto)) return []; // ex.: "Analista Administrativo" sem nível
+  if (ehAdministrativo) {
+    if (!administrativoDeEntrada) return []; // ex.: "Analista Administrativo" sem nível, ou chefia
     if (!localPermitido(vaga)) return [];
     return ["administrativo"];
   }

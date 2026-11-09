@@ -19,6 +19,7 @@ LinkedIn e os outros sites de emprego não são lidos diretamente (os termos de 
 ## Filtros
 
 - **Nível:** estágio, júnior, full stack ou IA. Pleno, sênior, lead, especialista etc. são ignorados.
+- **Saúde:** enfermagem, farmácia, fisioterapia, nutrição, psicologia, odontologia, laboratório etc. (sem medicina e sem chefia) vão para #vagas-saude. Cargos administrativos em hospital, clínica, laboratório ou farmácia vão para #vagas-saude e #vagas-administrativas.
 - **Administrativas:** assistente, auxiliar, recepcionista, estágio, jovem aprendiz ou júnior administrativo vão para #vagas-administrativas.
 - **Presencial/híbrida:** só em Porto Alegre, Canoas, São Leopoldo, Esteio, Eldorado do Sul e Sapucaia do Sul.
 - **Remota no Brasil:** sempre passa.
@@ -36,6 +37,7 @@ LinkedIn e os outros sites de emprego não são lidos diretamente (os termos de 
 | #remoto | `DISCORD_WEBHOOK_REMOTO` |
 | #internacional | `DISCORD_WEBHOOK_INTERNACIONAL` |
 | #vagas-administrativas | `DISCORD_WEBHOOK_VAGAS_ADMINISTRATIVAS` |
+| #vagas-saude | `DISCORD_WEBHOOK_VAGAS_SAUDE` |
 | #administrativo (avisos de erro) | `DISCORD_WEBHOOK_ADMIN` |
 
 Vagas do Brasil vão para o canal do nível e, se forem remotas, também para #remoto. Vagas internacionais vão para #internacional (e as de IA também para #ia).
